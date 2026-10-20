@@ -16,7 +16,7 @@ A scheduled workflow runs `scripts/update-formula.sh` every three hours. It read
 points to, downloads that release's `manifest.json`, checks its signature against the release key in
 `allowed_signers` (fingerprint `SHA256:QY3xHG6gCBN84NfeYw1Vy1r5G0NpGTf0jDR02/QVLr8`, the same key `install.sh` and
 `tcode` pin), and writes the binaries' SHA-256 checksums from it into `Formula/tcode.rb`. Homebrew checks each
-download against those checksums.
+download against those checksums. The formula never moves to an older version, even if the channel points to one.
 
 To install without Homebrew, or to verify a release yourself, see
 [Install and verify](https://github.com/Tropos-AI/tropos-code/blob/main/docs/install.md).

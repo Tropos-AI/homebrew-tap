@@ -15,6 +15,15 @@ case "$version" in
   *) echo "update-formula: unexpected version from the latest channel: $version" >&2; exit 1 ;;
 esac
 
+# The channel pointer isn't signed, so it may never move the formula to an older (still validly signed) release,
+# just as tcode's own updater never installs an older version.
+current="$(sed -n 's/^  version "\(.*\)"$/\1/p' "$root/Formula/tcode.rb" 2>/dev/null || true)"
+if [ -n "$current" ] && [ "$version" != "$current" ] &&
+  [ "$(printf '%s\n%s\n' "$current" "$version" | sort -V | tail -n 1)" != "$version" ]; then
+  echo "update-formula: the latest channel points to $version, older than the formula's $current; leaving it" >&2
+  exit 1
+fi
+
 base="https://github.com/$repo/releases/download/v$version"
 curl -fsSL -o "$tmp/manifest.json" "$base/manifest.json"
 curl -fsSL -o "$tmp/manifest.json.sig" "$base/manifest.json.sig"
